@@ -1,66 +1,58 @@
-## Foundry
+1. (Relative Stability) Anchored or Pegged -> $1.00
+   1. chainlink pricefeed .
+   2. set a function to exchange ETH & BTC -> $$
+2. (Stability Mechanism (Minting)) : Algorithmic (Decentralized)
+   1. People can only mint the stablecoin with enough collateral (coded)
+3. (Collateral) : Exogeneous
+   1. wETH
+   2. wBTC
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-Foundry consists of:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Nenu deposit chesina Collateral - 20 ETH(erc token)
+ippudu ee 20 ETH ni USD loki convert cheyadaniki Chainlink use chestaamu 
 
-## Documentation
 
-https://book.getfoundry.sh/
+health factor kanukovadaniki:-
 
-## Usage
+               1 ETh  ==  $20000 (from Chain Link )
+suppose okavela 20 ETH == $ 40000
 
-### Build
+pina $40000 lo 50% tisukuntaaru %20000
 
-```shell
-$ forge build
-```
+ippudu ee $20000 ni manam mint chesukunna stable coins tho divide chestaaru.(each stable is equal to $1)
 
-### Test
+precesion kosam ani $20000 ki 1e18 add chestamu... appudu:- $20000 * 1e18
+                                                           ----------------- < 1e18 (health factor break chesinatle )
+suppose manam kani 200001 stable coin mint chesukunnam anukoo  20000(here each stable coin is greater than 0) 
+_________________________________________________________________________________________________________________________________________ 20 <8
 
-```shell
-$ forge test
-```
 
-### Format
+amountCollateral = 10 ether
+amountToMint = 100 ether
 
-```shell
-$ forge fmt
-```
+1 eth = 2000
+10 eth = 20000
 
-### Gas Snapshots
+health factor:- 
 
-```shell
-$ forge snapshot
-```
+50% of 20000 ==> 10000 * 1e18 / 10 ether ==> 1000 * 1e18 < 
 
-### Anvil
 
-```shell
-$ anvil
-```
 
-### Deploy
+modifictaion at line 199-201 (in _burn function) 
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
 
-### Cast
+BUG in my point of view:- 
 
-```shell
-$ cast <subcommand>
-```
+i_dsc(DEcentralizedStableCoin.sol) == This contract keeps tracks of all the minted stable coins
 
-### Help
+IN LIQUIDATION PROCESS:-
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+
+* After Minting stable coins every time: s_DSCMinted[liquidator] is updating their balance by adding respective minted count (assume dscminted = 10 stable coins)
+
+* In liquidation (Assume debtToCOver = 4 stablecoins), Liquidator has to transfer 4 stablecoins out of 10 stable coins fron their balance 
+
+* But  s_DSCMinted[liquidator] is not updating balance as 6 stable coins
+
